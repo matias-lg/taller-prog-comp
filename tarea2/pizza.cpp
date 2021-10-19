@@ -48,6 +48,7 @@ int main()
   for (int i = 0; i < N; i++)
   {
     int s, a, b;
+
     cin >> s;
     cin >> a;
     cin >> b;
