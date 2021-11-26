@@ -59,38 +59,56 @@ int main()
 {
     int n,m; cin >> n >> m;
     vector<string> nums(n,"");
-    vector<vector<int>> ints(n);
+    // vector<vector<int>> ints(n);
+    vector<pair<int,int>> ms;
     while(m--){
         int a,b; cin >> a >> b;
-        int mx = max(a,b);
-        int mn = min(a,b);
-        ints[mx-1].push_back(n-(mx-mn));
-        ints[mn-1].push_back(mx-mn);
-        // nums[mx-1].append(to_string(n - (mx - mn)));
-        // nums[mn-1].append(to_string(mx-mn));
+        auto tmp = pair<int,int>(a,b);
+        ms.push_back(tmp);
     }
-    for (int i = 0; i < n; i++){
-        sort(ints[i].begin(), ints[i].end());
-        for (auto &&e : ints[i])
-        {
-            nums[i].append(to_string(e));
-        }
+    // sort(ms.begin(), ms.end());
+    std::sort(std::begin(ms),
+          std::end(ms),
+          [&](std::pair<int, int> const& lhs, std::pair<int, int> const& rhs)
+          {     
+              int lmx = max(lhs.first,lhs.second);
+              int lmn = min(lhs.first, lhs.second);
+              int rmx = max(rhs.first,rhs.second);
+              int rmn = min(rhs.first,rhs.second);
+              return max(lmx - lmn, n - (lmx - lmn)) > min(rmx - rmn, n - (rmx - rmn));
+          });
+    for (auto &&i : ms){
+        int mx = max(i.first,i.second);
+        int mn = min(i.first,i.second);
+        // ints[mx-1].push_back(n-(mx-mn));
+        // ints[mn-1].push_back(mx-mn);
+        nums[mx-1].append(to_string(n - (mx - mn)).append(" "));
+        nums[mn-1].append(to_string(mx-mn).append(" "));
     }
+    // for (int i = 0; i < n; i++){
+    //     sort(ints[i].begin(), ints[i].end());
+    //     for (auto &&e : ints[i])
+    //     {
+    //         nums[i].append(to_string(e));
+    //     }
+    // }
     
     string r = std::accumulate( std::next(nums.begin()), nums.end(), nums[0],  [](std::string a, std::string b) {return a + "$" + b;});
-    // r.append("$");
+    r.append("$");
     cout << r << endl;
     int l = r.length();
     string tmp = "$";
     tmp = tmp.append(r);
     r = r.append(tmp);
-    cout << r << endl;
+    // cout << r << endl;
     vector<int> res = prefix(r);
-    for(int i = 0; i < l; i++){
-        if(res[i] >= l){
-            cout << "Yes";
-            return 0;
-        }
+    // for (auto &&i : res)
+    // {
+    //     cout << i << " ";
+    // }
+    if(res[2*l-1] >= l){
+        cout << "Yes" << endl;
+        return 0;
     }
     cout << "No";
     return 0;
